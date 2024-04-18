@@ -57,7 +57,7 @@ def perform_ocr_on_image(image):
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
     print("api hit done ->>")
-    val_file = "/tmp/" + str(random.random())
+    val_file = "/tmp/" + "tempp"
     if not os.path.exists(val_file):
         os.makedirs(val_file)
         print(f"Directory '{val_file}' was created.")
