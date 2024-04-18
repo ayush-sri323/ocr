@@ -23,7 +23,7 @@ def crop_words(image_path, val_file):
     reader = easyocr.Reader(['en'])
     img = cv2.imread(image_path)
     results = reader.readtext(img)
-    for i, (bbox, text, prob):
+    for i, (bbox, text, prob) in enumerate(results):
         top_left = tuple(map(int, bbox[0]))
         bottom_right = typle(map(int, bbox[2]))
         x_min, y_min = top_left
@@ -43,7 +43,7 @@ def perform_ocr_on_image(image):
         "--image_folder", image,
         "--saved_model", "saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth"
         ]
-ś
+
 # File where the output will be saved
     output_file = "/tmp/result.txt"
 
