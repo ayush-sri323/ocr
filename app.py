@@ -39,7 +39,7 @@ def crop_words(image_path, val_file):
 def perform_ocr_on_image(image):
     # Define the command as a list of arguments
     command = [
-        "python3", "demo.py",
+        "python3", "/home/azureuser/deep-text-recognition-benchmark/download/demo.py",
         "--Transformation", "TPS",
         "--FeatureExtraction", "ResNet",
         "--SequenceModeling", "BiLSTM",
