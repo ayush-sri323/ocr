@@ -56,6 +56,7 @@ def perform_ocr_on_image(image):
     # Run the command and redirect stdout to the file
         subprocess.run(command, stdout=file)
 def read_files(result_file):
+    data = {}
     with open(result_file, 'r') as file:
                 for line in file:
                     parts = line.split(maxsplit=1)
@@ -91,7 +92,7 @@ def ocr_api():
         print("ocr performance doneee")
         data = read_files(result_file)
         ans = {}
-        for key in sorted(data.keys):
+        for key in sorted(data.keys()):
             ans[key]=data.get(key, "")
         
     
