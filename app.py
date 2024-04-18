@@ -45,7 +45,7 @@ def perform_ocr_on_image(image):
         "--SequenceModeling", "BiLSTM",
         "--Prediction", "Attn",
         "--image_folder", image,
-        "--saved_model", "saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth"
+        "--saved_model", "/home/azureuser/deep-text-recognition-benchmark/download/saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth"
         ]
 
 # File where the output will be saved
