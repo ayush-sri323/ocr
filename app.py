@@ -6,7 +6,9 @@ from PIL import Image
 import io
 import random
 import os
+import easyocr
 app = Flask(__name__)
+
 
 def download_image(image_url, val_file):
     """Download an image from a URL."""
@@ -76,6 +78,7 @@ def ocr_api():
         print("download image done ==")
         # Dummy bounding boxes, replace with actual data or detection logic
         crop_words(image_file + '.jpg', val_file)
+        print("cropping word done = ")
         os.remove(image_file + ".jpg")
         perform_ocr_on_image(result_file)
         print("ocr performance doneee")
