@@ -71,7 +71,7 @@ def ocr_api():
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_file = val_file + "/" + hash(image_url)
+        image_file = val_file + "/" + str(hash(image_url))
         download_image(image_url, image_file)
         # Dummy bounding boxes, replace with actual data or detection logic
         words_images = crop_words(image_file + '.jpg', val_file)
