@@ -71,12 +71,14 @@ def ocr_api():
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_file = val_file + "/" + str(hash(image_url))
+        image_file = val_file + "/" + "tmpp2"
         download_image(image_url, image_file)
+        print("download image done ==")
         # Dummy bounding boxes, replace with actual data or detection logic
-        words_images = crop_words(image_file + '.jpg', val_file)
+        crop_words(image_file + '.jpg', val_file)
         os.remove(image_file + ".jpg")
         perform_ocr_on_image(result_file)
+        print("ocr performance doneee")
         data = {}
         with open(result_file, 'r') as file:
             for line in file:
