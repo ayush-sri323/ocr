@@ -90,7 +90,7 @@ def ocr_api():
                 if len(parts) == 2:
                     filename, text = parts
                 data[filename.strip()] = text.strip()
-        cr_results.extend(result)
+        
         
         return jsonify({'status': 'success', 'data': data})
     except Exception as e:
