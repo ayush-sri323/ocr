@@ -55,8 +55,14 @@ def perform_ocr_on_image(image):
     with open(output_file, "w") as file:
     # Run the command and redirect stdout to the file
         subprocess.run(command, stdout=file)
-
-
+def read_files(result_file):
+    with open(result_file, 'r') as file:
+                for line in file:
+                    parts = line.split(maxsplit=1)
+                    if len(parts) == 2:
+                        filename, text = parts
+                        data[filename.strip()] = text.strip()
+    return data
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
     print("api hit done ->>")
@@ -83,16 +89,16 @@ def ocr_api():
         os.remove(image_file + ".jpg")
         perform_ocr_on_image(val_file)
         print("ocr performance doneee")
-        data = {}
-        with open(result_file, 'r') as file:
-            for line in file:
-                parts = line.split(maxsplit=1)
-                if len(parts) == 2:
-                    filename, text = parts
-                data[filename.strip()] = text.strip()
+        data = read_files(result_file)
+        ans = {}
+        for key in sorted(data.keys):
+            ans[key]=data.get(key, "")
+        
+    
+
         
         
-        return jsonify({'status': 'success', 'data': data})
+        return jsonify({'status': 'success', 'data': ans})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
