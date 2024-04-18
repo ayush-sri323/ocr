@@ -55,6 +55,7 @@ def perform_ocr_on_image(image):
 
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
+    print("api hit done ->>")
     val_file = "/tmp/" + str(uuid.uuid4())
     if not os.path.exists(val_file):
         os.makedirs(val_file)
@@ -63,6 +64,7 @@ def ocr_api():
 
     val_txt_file = val_file +  "/" + "labels.txt"
     data = request.json
+    print("value of data ===", data)
     image_url = data.get('image_url')
     if not image_url:
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
