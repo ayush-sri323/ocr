@@ -15,7 +15,7 @@ def download_image(image_url, val_file):
     # Generate a filename based on the URL to minimize overwrites
     filename = f"{val_file}.jpg"
     cv2.imwrite(filename, cv_image)
-    return cv_image, filename
+    
    
 
 def crop_words(image_path, val_file):
@@ -43,7 +43,7 @@ def perform_ocr_on_image(image):
         "--image_folder", image,
         "--saved_model", "saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth"
         ]
-
+ś
 # File where the output will be saved
     output_file = "/tmp/result.txt"
 
@@ -56,16 +56,20 @@ def perform_ocr_on_image(image):
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
     val_file = "/tmp/" + str(uuid.uuid4())
+    if not os.path.exists(val_file):
+        os.makedirs(val_file)
+        print(f"Directory '{val_file}' was created.")
     result_file = "/tmp/result.txt"
-    val_txt_file = val_file + "/"  + "labels.txt"
+
+    val_txt_file = val_file +  "/" + "labels.txt"
     data = request.json
     image_url = data.get('image_url')
     if not image_url:
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_file = val_file + '/' + hash(image_url)
-        image = download_image(image_url, image_file)
+        image_file = val_file + "/" + hash(image_url)
+        download_image(image_url, image_file)
         # Dummy bounding boxes, replace with actual data or detection logic
         words_images = crop_words(image_file + '.jpg', val_file)
         os.remove(image_file + ".jpg")
