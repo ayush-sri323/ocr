@@ -28,7 +28,7 @@ def crop_words(image_path, val_file):
     results = reader.readtext(img)
     for i, (bbox, text, prob) in enumerate(results):
         top_left = tuple(map(int, bbox[0]))
-        bottom_right = typle(map(int, bbox[2]))
+        bottom_right = tuple(map(int, bbox[2]))
         x_min, y_min = top_left
         x_max, y_max = bottom_right
         cropped_image = img[y_min:y_max, x_min:x_max]
