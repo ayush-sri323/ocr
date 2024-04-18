@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
+import random
 import os
 app = Flask(__name__)
 
@@ -56,7 +57,7 @@ def perform_ocr_on_image(image):
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
     print("api hit done ->>")
-    val_file = "/tmp/" + str(uuid.uuid4())
+    val_file = "/tmp/" + str(random.random())
     if not os.path.exists(val_file):
         os.makedirs(val_file)
         print(f"Directory '{val_file}' was created.")
