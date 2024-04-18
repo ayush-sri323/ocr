@@ -81,7 +81,7 @@ def ocr_api():
         crop_words(image_file + '.jpg', val_file)
         print("cropping word done = ")
         os.remove(image_file + ".jpg")
-        perform_ocr_on_image(result_file)
+        perform_ocr_on_image(val_file)
         print("ocr performance doneee")
         data = {}
         with open(result_file, 'r') as file:
