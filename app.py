@@ -95,7 +95,7 @@ def ocr_api():
         # Dummy bounding boxes, replace with actual data or detection logic
         crop_words(image_path, val_file)
         print("cropping word done = ")
-        #os.remove(image_file + ".jpg")
+        os.remove(image_path)
         perform_ocr_on_image(val_file)
         print("ocr performance doneee")
         data = read_files(result_file)
@@ -118,9 +118,11 @@ def ocr_api():
                          "predict_text": predict_text
                         }
             ans.append(output)
+
+        os.remove(val_file)
         
 
-        
+                
         return jsonify({'status': 'success', 'data': ans})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
