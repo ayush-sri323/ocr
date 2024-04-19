@@ -103,6 +103,7 @@ def ocr_api():
                 split_text = text_and_image_path.split("\t")
                 predict_text = split_text[1]
                 bounding_box_text = key + split_text[0].split('_')[0]
+                print("bounding box text = ", bounding_box_text)
                 coords = re.findall(r"\(\d+,\s*\d+\)", bounding_box_text)
                 print("value of cords ==", coords)
                 bounding_box = tuple(tuple(int(num) for num in coord.strip('()').split(',')) for coord in coords)
