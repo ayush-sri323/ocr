@@ -92,9 +92,23 @@ def ocr_api():
         perform_ocr_on_image(val_file)
         print("ocr performance doneee")
         data = read_files(result_file)
-        ans = {}
+        ans = []
+
+
         for key in sorted(data.keys()):
-            ans[key]=data.get(key, "")
+            output = {}
+            if key.startswith("/tmp/tempp/"):
+                text_and_image_path = data[key]
+                split_text = text_and_image_path.split("\t")
+                predict_text = split_text[1]
+                bounding_box_text = key + split_text[0].split('_')[0]
+                coords = re.findall(r"\(\d+,\s*\d+\)", bounding_box_text)
+                bounding_box = tuple(tuple(int(num) for num in coord.strip('()').split(',')) for coord in coords)
+                output = {
+                         "bounding_box": bounding_box,
+                         "predict_text": predict_text
+                        }
+            ans.append(output)
         
 
         
