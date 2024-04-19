@@ -79,13 +79,13 @@ def ocr_api():
     if file.filename == '':
         return "No file selected for uploading", 400
     if file:
-        file.save(os.path.join("/tmp/my.jpg", filename))
-        return "File successfully uploaded", 201
-    data = request.json
-    print("value of data ===", data)
-    image_url = data.get('image_url')
-    if not image_url:
-        return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
+        file.save("/tmp/my.jpg")
+    
+    #data = request.json
+    #print("value of data ===", data)
+    #image_url = data.get('image_url')
+    #if not image_url:
+     #   return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
         image_path = '/tmp/' + "my.jpg"
