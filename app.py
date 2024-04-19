@@ -8,6 +8,7 @@ import random
 import os
 import easyocr
 import subprocess
+import re
 app = Flask(__name__)
 
 
