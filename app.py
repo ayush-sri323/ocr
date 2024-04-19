@@ -75,6 +75,12 @@ def ocr_api():
     result_file = "/tmp/result.txt"
 
     #val_txt_file = val_file +  "/" + "labels.txt"
+    file = request.files['file']
+    if file.filename == '':
+        return "No file selected for uploading", 400
+    if file:
+        file.save(os.path.join("/tmp/my.jpg", filename))
+        return "File successfully uploaded", 201
     data = request.json
     print("value of data ===", data)
     image_url = data.get('image_url')
@@ -83,7 +89,7 @@ def ocr_api():
 
     try:
         image_path = '/tmp/' + "my.jpg"
-        download_image(image_url, image_path)
+        #download_image(image_url, image_path)
         #save image in tmp/tempp/tmp2/my.jpg
         print("download image done ==")
         # Dummy bounding boxes, replace with actual data or detection logic
