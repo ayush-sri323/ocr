@@ -93,9 +93,9 @@ def ocr_api():
         data = read_files(result_file)
         ans = {}
         for key in sorted(data.keys()):
-            if "tmp" in key:
-                split_val = 
             ans[key]=data.get(key, "")
+        
+
         
         return jsonify({'status': 'success', 'data': ans})
     except Exception as e:
