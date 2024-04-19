@@ -11,15 +11,15 @@ import subprocess
 app = Flask(__name__)
 
 
-def download_image(image_url, val_file):
+def download_image(image_url, val_file, image_name):
     """Download an image from a URL."""
     response = requests.get(image_url)
     image = Image.open(io.BytesIO(response.content))
     cv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    # Generate a filename based on the URL to minimize overwrites
-    filename = f"{val_file}.jpg"
+    # Generate a filename based on the URL to minimize overwrite
+    filename = f"{val_file}/{image_name}.jpg"
     cv2.imwrite(filename, cv_image)
-    
+#save image in tmpp/tmp2/my.jpg
    
 
 def crop_words(image_path, val_file):
@@ -33,8 +33,8 @@ def crop_words(image_path, val_file):
         x_min, y_min = top_left
         x_max, y_max = bottom_right
         cropped_image = img[y_min:y_max, x_min:x_max]
-        crop_img_path = f'{top_left}_{bottom_right}.png'
-        cv2.imwrite(val_file + '/', cropped_image)
+        crop_img_path = f'{val_file}/{top_left}_{bottom_right}.png'
+        cv2.imwrite(crop_img_path, cropped_image)
 
 def perform_ocr_on_image(image):
     # Define the command as a list of arguments
@@ -68,12 +68,13 @@ def read_files(result_file):
 def ocr_api():
     print("api hit done ->>")
     val_file = "/tmp/" + "tempp"
+    image_name = "my"
     if not os.path.exists(val_file):
         os.makedirs(val_file)
         print(f"Directory '{val_file}' was created.")
     result_file = "/tmp/result.txt"
 
-    val_txt_file = val_file +  "/" + "labels.txt"
+    #val_txt_file = val_file +  "/" + "labels.txt"
     data = request.json
     print("value of data ===", data)
     image_url = data.get('image_url')
@@ -81,14 +82,15 @@ def ocr_api():
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_file = val_file + "/" + "tmpp2"
-        download_image(image_url, image_file)
+        image_file = '/tmp/' + "tmpp2"
+        download_image(image_url, image_file, image_name)
+        #save image in tmp/tempp/tmp2/my.jpg
         print("download image done ==")
         # Dummy bounding boxes, replace with actual data or detection logic
-        crop_words(image_file + '.jpg', val_file)
+        crop_words(image_file + '/my.jpg', val_file)
         print("cropping word done = ")
-        os.remove(image_file + ".jpg")
-        perform_ocr_on_image(val_file)
+        #os.remove(image_file + ".jpg")
+        perform_ocr_on_image(image_file)
         print("ocr performance doneee")
         data = read_files(result_file)
         ans = {}
