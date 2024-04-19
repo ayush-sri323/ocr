@@ -33,8 +33,8 @@ def crop_words(image_path, val_file):
         x_min, y_min = top_left
         x_max, y_max = bottom_right
         cropped_image = img[y_min:y_max, x_min:x_max]
-        crop_img_path = f'{val_file}/{top_left}_{bottom_right}.png'
-        cv2.imwrite(crop_img_path, cropped_image)
+        crop_img_path = f'{top_left}_{bottom_right}.png'
+        cv2.imwrite(crop_img_path + '/', cropped_image)
 
 def perform_ocr_on_image(image):
     # Define the command as a list of arguments
@@ -93,11 +93,9 @@ def ocr_api():
         data = read_files(result_file)
         ans = {}
         for key in sorted(data.keys()):
+            if "tmp" in key:
+                split_val = 
             ans[key]=data.get(key, "")
-        
-    
-
-        
         
         return jsonify({'status': 'success', 'data': ans})
     except Exception as e:
