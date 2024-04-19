@@ -11,14 +11,13 @@ import subprocess
 app = Flask(__name__)
 
 
-def download_image(image_url, val_file, image_name):
+def download_image(image_url, image_path):
     """Download an image from a URL."""
     response = requests.get(image_url)
     image = Image.open(io.BytesIO(response.content))
     cv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     # Generate a filename based on the URL to minimize overwrite
-    filename = f"{val_file}/{image_name}.jpg"
-    cv2.imwrite(filename, cv_image)
+    cv2.imwrite(image_path, cv_image)
 #save image in tmpp/tmp2/my.jpg
    
 
@@ -82,8 +81,8 @@ def ocr_api():
         return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_file = '/tmp/' + "tmpp2"
-        download_image(image_url, image_file, image_name)
+        image_file = '/tmp/' + "my.jpg"
+        download_image(image_url, image_path)
         #save image in tmp/tempp/tmp2/my.jpg
         print("download image done ==")
         # Dummy bounding boxes, replace with actual data or detection logic
