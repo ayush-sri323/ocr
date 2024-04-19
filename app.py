@@ -104,6 +104,7 @@ def ocr_api():
                 predict_text = split_text[1]
                 bounding_box_text = key + split_text[0].split('_')[0]
                 coords = re.findall(r"\(\d+,\s*\d+\)", bounding_box_text)
+                print("value of cords ==", coords)
                 bounding_box = tuple(tuple(int(num) for num in coord.strip('()').split(',')) for coord in coords)
                 output = {
                          "bounding_box": bounding_box,
