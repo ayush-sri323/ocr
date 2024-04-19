@@ -119,7 +119,7 @@ def ocr_api():
                         }
             ans.append(output)
 
-        os.remove(val_file)
+        os.rmdir(val_file)
         
 
                 
