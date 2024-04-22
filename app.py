@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 import cv2
 import numpy as np
@@ -9,8 +10,12 @@ import os
 import easyocr
 import subprocess
 import re
+import string
+import io
+import random
+import shutil
 app = Flask(__name__)
-
+CORS(app)
 
 def download_image(image_url, image_path):
     """Download an image from a URL."""
@@ -27,14 +32,18 @@ def crop_words(image_path, val_file):
     reader = easyocr.Reader(['en'])
     img = cv2.imread(image_path)
     results = reader.readtext(img)
-    for i, (bbox, text, prob) in enumerate(results):
-        top_left = tuple(map(int, bbox[0]))
-        bottom_right = tuple(map(int, bbox[2]))
-        x_min, y_min = top_left
-        x_max, y_max = bottom_right
-        cropped_image = img[y_min:y_max, x_min:x_max]
-        crop_img_path = f'{val_file}/{top_left}_{bottom_right}.png'
-        cv2.imwrite(crop_img_path, cropped_image)
+    for i, result in enumerate(results):
+        if len(result) == 3:
+            bbox, txt, prob = result
+            top_left = tuple(map(int, bbox[0]))
+            bottom_right = tuple(map(int, bbox[2]))
+            x_min, y_min = top_left
+            x_max, y_max = bottom_right
+            cropped_image = img[y_min:y_max, x_min:x_max]
+            crop_img_path = f'{val_file}/{top_left}_{bottom_right}.png'
+            cv2.imwrite(crop_img_path, cropped_image)
+        else:
+            print("no ocr")
 
 def perform_ocr_on_image(image):
     # Define the command as a list of arguments
@@ -59,28 +68,28 @@ def read_files(result_file):
     data = {}
     with open(result_file, 'r') as file:
                 for line in file:
-                    parts = line.split(maxsplit=1)
+                    parts = line.strip().split(maxsplit=1)
                     if len(parts) == 2:
                         filename, text = parts
                         data[filename.strip()] = text.strip()
+                    else:
+                        print("skip")
     return data
 @app.route('/api/ocr', methods=['POST'])
 def ocr_api():
     print("api hit done ->>")
     val_file = "/tmp/" + "tempp"
-    image_name = "my"
+    charr = string.ascii_letters + string.digits
+    img_file_val = ''.join(random.choice(charr) for i in range(10))
+    img_file_name = "/tmp/" + img_file_val + ".jpg" 
+    image_name = "/"
     if not os.path.exists(val_file):
         os.makedirs(val_file)
         print(f"Directory '{val_file}' was created.")
     result_file = "/tmp/result.txt"
-
-    #val_txt_file = val_file +  "/" + "labels.txt"
-    file = request.files['file']
-    if file.filename == '':
-        return "No file selected for uploading", 400
-    if file:
-        file.save("/tmp/my.jpg")
-    
+    file = request.files['file'] 
+    with open(img_file_name, 'wb') as f:
+        f.write(file.read())
     #data = request.json
     #print("value of data ===", data)
     #image_url = data.get('image_url')
@@ -88,7 +97,7 @@ def ocr_api():
      #   return jsonify({'status': 'error', 'message': 'No image URL provided'}), 400
 
     try:
-        image_path = '/tmp/' + "my.jpg"
+        image_path = img_file_name
         #download_image(image_url, image_path)
         #save image in tmp/tempp/tmp2/my.jpg
         print("download image done ==")
@@ -105,22 +114,33 @@ def ocr_api():
         for key in sorted(data.keys()):
             output = {}
             if key.startswith("/tmp/tempp/"):
+                print("value of imag epath = ", key)
+                print("value of text = ", data[key])
                 text_and_image_path = data[key]
                 split_text = text_and_image_path.split("\t")
+                print("length of split text = ", len(split_text))
+                if len(split_text) < 2:
+                    continue
                 predict_text = split_text[1]
                 bounding_box_text = key + split_text[0].split('.png')[0]
                 print("bounding box text = ", bounding_box_text)
                 coords = re.findall(r"\(\d+,\s*\d+\)", bounding_box_text)
                 print("value of cords ==", coords)
-                bounding_box = tuple(tuple(int(num) for num in coord.strip('()').split(',')) for coord in coords)
+                if coords:
+                    bounding_box = tuple(tuple(int(num) for num in coord.strip('()').split(',')) for coord in coords)
+                else:
+                    print("no cofe")
                 output = {
                          "bounding_box": bounding_box,
                          "predict_text": predict_text
                         }
-            ans.append(output)
+                ans.append(output)
+            else:
+                continue
+            
 
-        os.rmdir(val_file)
-        
+        shutil.rmtree(val_file)
+        os.remove("/tmp/result.txt") 
 
                 
         return jsonify({'status': 'success', 'data': ans})
